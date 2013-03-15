@@ -12,6 +12,12 @@
 #include <asm/io.h>
 #include <asm/emif.h>
 
+/* This value might need some tweaking, but it effectively allows the LCDC */
+/* and the ARM to play fairer in memory, so the LCDC does not get starved causing */
+/* the screen to roll */
+/* See Page 439 in spruh73g (AM33xx TRM) for details */
+#define AM33XX_INT_CONFIG_COUNT 0x00303030
+
 /**
  * Base address for EMIF instances
  */
@@ -70,6 +76,10 @@ void set_sdram_timings(const struct emif_regs *regs, int nr)
 	writel(regs->sdram_tim2, &emif_reg[nr]->emif_sdram_tim_2_shdw);
 	writel(regs->sdram_tim3, &emif_reg[nr]->emif_sdram_tim_3);
 	writel(regs->sdram_tim3, &emif_reg[nr]->emif_sdram_tim_3_shdw);
+
+	/* Configure INT_CONFIG value so that LCDC does not get stalled */
+	/* for a long time if ARM is accessing memory */
+	writel(AM33XX_INT_CONFIG_COUNT, &emif_reg[nr]->emif_l3_config);
 }
 
 /**
