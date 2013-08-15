@@ -328,7 +328,6 @@
 /* Defines for SPL */
 #define CONFIG_SPL
 #define CONFIG_SPL_FRAMEWORK
-#define CONFIG_SPL_USBETH_SUPPORT
 
 /*
  * Place the image at the start of the ROM defined image space.
