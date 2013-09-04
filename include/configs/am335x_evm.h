@@ -61,7 +61,8 @@
 	"rdaddr=0x81000000\0" \
 	"bootdir=/boot\0" \
 	"bootfile=uImage\0" \
-	"fdtfile=am335x-boneblack.dtb\0" \
+	"initramfs=initramfs.img\0" \
+	"fdtfile=undefined\0" \
 	"console=ttyO0,115200n8\0" \
 	"optargs=\0" \
 	"mtdids=" MTDIDS_DEFAULT "\0" \
@@ -103,8 +104,7 @@
 		"rootfstype=${spirootfstype}\0" \
 	"netargs=setenv bootargs console=${console} " \
 		"${optargs} " \
-		"root=/dev/nfs " \
-		"nfsroot=${serverip}:${rootpath},${nfsopts} rw " \
+		"init=/sbin/init " \
 		"ip=dhcp\0" \
 	"bootenv=uEnv.txt\0" \
 	"loadbootenv=load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${bootenv}\0" \
@@ -159,6 +159,9 @@
 	"gpio set 53; " \
 	"i2c mw 0x24 1 0x3e; " \
 	"run findfdt; " \
+	"if test $boot_device = eth || test $boot_device = usbeth; then " \
+	"run netboot; " \
+	"fi; " \
 	"mmc dev 0; if mmc rescan ; then " \
 		"gpio set 54; " \
 		"setenv mmcdev 0; " \
