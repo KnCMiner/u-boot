@@ -395,39 +395,6 @@ int board_late_init(void)
 	strncpy(safe_string, (char *)header.version, sizeof(header.version));
 	safe_string[sizeof(header.version)] = 0;
 	setenv("board_rev", safe_string);
-
-	switch (gd->arch.omap_boot_params.omap_bootdevice) {
-	case BOOT_DEVICE_XIP:
-		setenv("boot_device", "xip");
-		break;
-	case BOOT_DEVICE_NAND:
-		setenv("boot_device", "nand");
-		break;
-	case BOOT_DEVICE_MMC1:
-		setenv("boot_device", "mmc1");
-		break;
-	case BOOT_DEVICE_MMC2:
-		setenv("boot_device", "mmc2");
-		break;
-	case BOOT_DEVICE_SPI:
-		setenv("boot_device", "spi");
-		break;
-	case BOOT_DEVICE_UART:
-		setenv("boot_device", "uart");
-		break;
-	case BOOT_DEVICE_USBETH:
-		setenv("boot_device", "usbeth");
-		break;
-	case BOOT_DEVICE_CPGMAC:
-		setenv("boot_device", "eth");
-		break;
-	case BOOT_DEVICE_MMC2_2:
-		setenv("boot_device", "mmc2-2");
-		break;
-	default:
-		setenv("boot_device", NULL);
-		break;
-	}
 #endif
 
 	return 0;

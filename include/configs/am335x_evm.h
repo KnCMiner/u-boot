@@ -57,11 +57,12 @@
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"loadaddr=0x80200000\0" \
 	"fdtaddr=0x80F80000\0" \
+	"initramfsaddr=0x81000000\0" \
 	"fdt_high=0xffffffff\0" \
 	"rdaddr=0x81000000\0" \
 	"bootdir=/boot\0" \
 	"bootfile=uImage\0" \
-	"initramfs=initramfs.img\0" \
+	"initramfsfile=initramfs.img\0" \
 	"fdtfile=undefined\0" \
 	"console=ttyO0,115200n8\0" \
 	"optargs=\0" \
@@ -137,8 +138,9 @@
 		"dhcp; " \
 		"tftp ${loadaddr} ${bootfile}; " \
 		"tftp ${fdtaddr} ${fdtfile}; " \
+		"tftp ${initramfsaddr} ${initramfsfile}; " \
 		"run netargs; " \
-		"bootm ${loadaddr} - ${fdtaddr}\0" \
+		"bootm ${loadaddr} ${initramfsaddr} ${fdtaddr}\0" \
 	"ramboot=echo Booting from ramdisk ...; " \
 		"run ramargs; " \
 		"bootm ${loadaddr} ${rdaddr} ${fdtaddr}\0" \
@@ -155,13 +157,17 @@
 			"echo WARNING: Could not determine device tree to use; fi; \0"
 #endif
 
+#ifdef CONFIG_NET_BOOT
+#define DO_NETBOOT "run netboot; "
+#else
+#define DO_NETBOOT ""
+#endif
+
 #define CONFIG_BOOTCOMMAND \
 	"gpio set 53; " \
 	"i2c mw 0x24 1 0x3e; " \
 	"run findfdt; " \
-	"if test $boot_device = eth || test $boot_device = usbeth; then " \
-	"run netboot; " \
-	"fi; " \
+	DO_NETBOOT \
 	"mmc dev 0; if mmc rescan ; then " \
 		"gpio set 54; " \
 		"setenv mmcdev 0; " \
