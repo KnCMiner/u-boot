@@ -135,7 +135,9 @@
 		"bootm ${loadaddr}\0" \
 	"netboot=echo Booting from network ...; " \
 		"setenv autoload no; " \
-		"dhcp; " \
+		"dhcp;" \
+		"tftp ${loadaddr} ${serverip}:${ethaddr}.conf && env import -t ${loadaddr} ${filesize};" \
+		"run netboot_cmd;" \
 		"tftp ${loadaddr} ${bootfile}; " \
 		"tftp ${fdtaddr} ${fdtfile}; " \
 		"tftp ${initramfsaddr} ${initramfsfile}; " \
